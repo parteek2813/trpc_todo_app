@@ -8,17 +8,6 @@ const todoInputObject = z.object({
 });
 
 const appRouter = router({
-  createTodo: publicProcedure.input(todoInputObject).mutation(async (opts) => {
-    const title = opts.input.title;
-    const description = opts.input.description;
-
-    // do db stuff
-
-    return {
-      id: "1",
-    };
-  }),
-
   signup: publicProcedure
     .input(
       z.object({
@@ -27,6 +16,10 @@ const appRouter = router({
       })
     )
     .mutation(async (opts) => {
+      // context
+      const username = opts.ctx.username;
+      console.log(username);
+
       let email = opts.input.email;
       let password = opts.input.password;
 
@@ -38,10 +31,34 @@ const appRouter = router({
         token,
       };
     }),
+
+  createTodo: publicProcedure
+    .input(
+      z.object({
+        title: z.string(),
+      })
+    )
+    .mutation(async (opts) => {
+      console.log(opts.ctx.username);
+      // is user does exist, then create todo otherwise throw error
+
+      return {
+        id: "1",
+      };
+    }),
 });
 
 const server = createHTTPServer({
   router: appRouter,
+  createContext(opts) {
+    let authHeader = opts.req.headers["authorization"];
+
+    console.log(authHeader);
+    // jwt verify
+    return {
+      username: "123",
+    };
+  },
 });
 
 server.listen(3000);

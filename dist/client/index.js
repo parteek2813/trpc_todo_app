@@ -14,14 +14,20 @@ const trpc = (0, client_1.createTRPCProxyClient)({
     links: [
         (0, client_1.httpBatchLink)({
             url: "http://localhost:3000",
+            headers() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    return {
+                        authorization: "Bearer 14324234",
+                    };
+                });
+            },
         }),
     ],
 });
 function main() {
     return __awaiter(this, void 0, void 0, function* () {
-        let response = yield trpc.signup.mutate({
-            email: "Parteekkumar",
-            password: "dnsad",
+        let response = yield trpc.createTodo.mutate({
+            title: "Parteekkumar",
         });
         console.log(response);
     });
